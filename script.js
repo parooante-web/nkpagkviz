@@ -1,59 +1,77 @@
-const quizData = [
+const questions = [
     {
-        question: "Koje godine je osnovan NK Pag?",
-        a: "1920.",
-        b: "1992.",
-        c: "1993.",
-        correct: "c"
+        q: "Koje godine je osnovan NK Pag?",
+        options: ["1920.", "1992.", "1993.", "1950."],
+        correct: 2 // Indeks 2 je 1993.
     },
     {
-        question: "Kako se zove stadion na kojem igra NK Pag?",
-        a: "Julovica",
-        b: "Poljud",
-        c: "Stanovi",
-        correct: "a"
+        q: "Kako se zove domaći teren NK Paga?",
+        options: ["Gradski stadion Pag", "Julovica", "Velebit", "Solana"],
+        correct: 1
+    },
+    {
+        q: "Koje su tradicionalne boje kluba?",
+        options: ["Crno-bijela", "Crveno-bijela", "Plavo-bijela", "Zelena"],
+        correct: 2
     }
 ];
 
-const quizContainer = document.getElementById('quiz');
-const resultsContainer = document.getElementById('results');
-const submitButton = document.getElementById('submit');
+let currentIdx = 0;
+let score = 0;
 
-function buildQuiz() {
-    const output = [];
-    quizData.forEach((currentQuestion, questionNumber) => {
-        const answers = [];
-        for(letter in currentQuestion) {
-            if(letter !== 'question' && letter !== 'correct') {
-                answers.push(
-                    `<label>
-                        <input type="radio" name="question${questionNumber}" value="${letter}">
-                        ${letter} : ${currentQuestion[letter]}
-                    </label><br>`
-                );
-            }
-        }
-        output.push(
-            `<div class="question"> ${currentQuestion.question} </div>
-            <div class="answers"> ${answers.join('')} </div>`
-        );
+const questionText = document.getElementById("question-text");
+const optionsContainer = document.getElementById("options-container");
+const progress = document.getElementById("progress");
+const counter = document.getElementById("question-counter");
+const quizBody = document.getElementById("quiz-body");
+const resultScreen = document.getElementById("result-screen");
+const finalScore = document.getElementById("final-score");
+
+function loadQuestion() {
+    const q = questions[currentIdx];
+    questionText.innerText = q.q;
+    optionsContainer.innerHTML = "";
+    counter.innerText = `Pitanje ${currentIdx + 1} od ${questions.length}`;
+    progress.style.width = `${((currentIdx) / questions.length) * 100}%`;
+
+    q.options.forEach((opt, i) => {
+        const btn = document.createElement("button");
+        btn.innerText = opt;
+        btn.classList.add("option-btn");
+        btn.onclick = () => checkAnswer(i, btn);
+        optionsContainer.appendChild(btn);
     });
-    quizContainer.innerHTML = output.join('');
+}
+
+function checkAnswer(selected, btn) {
+    const correct = questions[currentIdx].correct;
+    const allBtns = document.querySelectorAll(".option-btn");
+    
+    allBtns.forEach(b => b.style.pointerEvents = "none"); // Zabrani klikanje ostalih
+
+    if (selected === correct) {
+        btn.classList.add("correct");
+        score++;
+    } else {
+        btn.classList.add("wrong");
+        allBtns[correct].classList.add("correct");
+    }
+
+    setTimeout(() => {
+        currentIdx++;
+        if (currentIdx < questions.length) {
+            loadQuestion();
+        } else {
+            showResults();
+        }
+    }, 1200);
 }
 
 function showResults() {
-    const answerContainers = quizContainer.querySelectorAll('.answers');
-    let numCorrect = 0;
-    quizData.forEach((currentQuestion, questionNumber) => {
-        const answerContainer = answerContainers[questionNumber];
-        const selector = `input[name=question${questionNumber}]:checked`;
-        const userAnswer = (answerContainer.querySelector(selector) || {}).value;
-        if(userAnswer === currentQuestion.correct) {
-            numCorrect++;
-        }
-    });
-    resultsContainer.innerHTML = `Pogodili ste ${numCorrect} od ${quizData.length}!`;
+    quizBody.classList.add("hidden");
+    resultScreen.classList.remove("hidden");
+    progress.style.width = "100%";
+    finalScore.innerText = `Ostvarili ste ${score} od ${questions.length} bodova!`;
 }
 
-buildQuiz();
-submitButton.addEventListener('click', showResults);
+loadQuestion();
