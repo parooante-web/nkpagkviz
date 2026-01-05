@@ -3,17 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NK Pag Kviz</title>
+    <title>NK Pag | Službeni Kviz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="quiz-container">
-        <h1>Kviz: Koliko poznaješ NK Pag?</h1>
-        <div id="quiz">
+
+    <div class="background-overlay"></div>
+
+    <div class="quiz-card">
+        <div class="quiz-header">
+            <img src="https://via.placeholder.com/80" alt="NK Pag Logo" class="club-logo">
+            <h2>Kviz Znanja</h2>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress"></div>
             </div>
-        <button id="submit">Prikaži rezultat</button>
-        <div id="results"></div>
+        </div>
+
+        <div id="quiz-body">
+            <h3 id="question-text">Učitavanje pitanja...</h3>
+            <div class="options" id="options-container">
+                </div>
+        </div>
+
+        <div id="result-screen" class="hidden">
+            <i class="fas fa-trophy trophy-icon"></i>
+            <h3>Kraj Kviza!</h3>
+            <p id="final-score"></p>
+            <button onclick="location.reload()" class="btn-primary">Pokušaj ponovno</button>
+        </div>
+
+        <div class="quiz-footer">
+            <span id="question-counter">Pitanje 1 od 5</span>
+        </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
